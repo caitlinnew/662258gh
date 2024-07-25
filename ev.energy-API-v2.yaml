@@ -1,0 +1,3117 @@
+openapi: 3.1.0
+x-stoplight:
+  id: nrvetril0yhal
+info:
+  title: ev.energy v2 API
+  version: '2.0'
+  contact:
+    email: developers@ev.energy
+    url: developers.ev.energy
+    name: Philip Douglas
+  description: 'The official API for ev.energy, version 2.'
+  license:
+    name: Proprietary
+    url: 'https://ev.energy'
+  termsOfService: ''
+servers:
+  - url: 'https://api.ev.energy/v2'
+    description: Live API for both production and sandbox requests.
+    x-internal: false
+  - description: Staging server for internal testing only.
+    url: 'https://api-staging.ev.energy/v2'
+    x-internal: true
+paths:
+  /:
+    get:
+      summary: API root
+      description: Get links to resources accessible in the API.
+      operationId: get-root
+      responses:
+        '200':
+          description: Returns a list of all top-level collection URLs in the API.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: string
+                    x-stoplight:
+                      id: piqg550z09atb
+                    format: uri
+                  evses:
+                    type: string
+                    x-stoplight:
+                      id: iyvttz4z687mq
+                    format: uri
+                  evse_models:
+                    type: string
+                    x-stoplight:
+                      id: m8b93d7v2w9ws
+                    format: uri
+                  evse_makes:
+                    type: string
+                    x-stoplight:
+                      id: zsqv82w659bhk
+                    format: uri
+                  vehicles:
+                    type: string
+                    x-stoplight:
+                      id: 3uz8wjvh1clf1
+                    format: uri
+                  vehicle_trims:
+                    type: string
+                    x-stoplight:
+                      id: 6a78vkdpu3hif
+                    format: uri
+                  vehicle_models:
+                    type: string
+                    x-stoplight:
+                      id: 7zugmoe5598cq
+                    format: uri
+                  vehicle_makes:
+                    type: string
+                    x-stoplight:
+                      id: 8nvvyecmxba4g
+                    format: uri
+                  suppliers:
+                    type: string
+                    x-stoplight:
+                      id: fqe6vpzaddotk
+                    format: uri
+                  tariffs:
+                    type: string
+                    x-stoplight:
+                      id: gij3xoni47t1k
+                    format: uri
+              examples:
+                Example:
+                  value:
+                    users: 'https://api.ev.energy/v2/users/'
+                    evses: 'https://api.ev.energy/v2/evses/'
+                    evse_models: 'https://api.ev.energy/v2/evse_models/'
+                    evse_makes: 'https://api.ev.energy/v2/evse_makes/'
+                    vehicles: 'https://api.ev.energy/v2/vehicles/'
+                    vehicle_trims: 'https://api.ev.energy/v2/vehicle_trims/'
+                    vehicle_models: 'https://api.ev.energy/v2/vehicle_models/'
+                    vehicle_makes: 'https://api.ev.energy/v2/vehicle_makes/'
+                    suppliers: 'https://api.ev.energy/v2/suppliers/'
+                    tariffs: 'https://api.ev.energy/v2/tariffs/'
+          headers:
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestRetrieve'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/version-2'
+      tags:
+        - Root
+      x-stoplight:
+        id: m467m8cgddnw0
+  /users:
+    get:
+      summary: List users
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Returns a list of Users.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+                  x-stoplight:
+                    id: 6bm90fli1i3fr
+          headers:
+            Link:
+              $ref: '#/components/headers/link'
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestList'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-users
+      x-stoplight:
+        id: mlewj44bxydta
+      description: List all the users that the authorization token has access to.
+      parameters:
+        - $ref: '#/components/parameters/previous'
+        - $ref: '#/components/parameters/next'
+        - $ref: '#/components/parameters/page_size'
+        - $ref: '#/components/parameters/expand'
+        - $ref: '#/components/parameters/version-2'
+      security:
+        - oauth2:
+            - 'user:read'
+  '/users/{user_id}':
+    parameters:
+      - $ref: '#/components/parameters/user_id'
+    get:
+      summary: Retrieve user
+      description: 'Retrieve information about a single, specific user.'
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Returns a single User.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          headers:
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestRetrieve'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '404':
+          $ref: '#/components/responses/Problem404NotFound'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-users-user_id
+      x-stoplight:
+        id: hg9ev9nrzxnqe
+      parameters:
+        - $ref: '#/components/parameters/expand'
+        - $ref: '#/components/parameters/version-2'
+      security:
+        - oauth2:
+            - 'user:read'
+  /evses:
+    get:
+      summary: List EVSEs
+      tags:
+        - EVSEs
+      responses:
+        '200':
+          description: Returns a list of EVSEs.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EVSE'
+                  x-stoplight:
+                    id: axfkh0ulqiwr3
+          headers:
+            Link:
+              $ref: '#/components/headers/link'
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestList'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-evses
+      x-stoplight:
+        id: x0q19vlrqdbcx
+      parameters:
+        - $ref: '#/components/parameters/previous'
+        - $ref: '#/components/parameters/next'
+        - $ref: '#/components/parameters/page_size'
+        - $ref: '#/components/parameters/expand'
+        - $ref: '#/components/parameters/version-2'
+      description: List all the EVSEs that the authorization token has access to.
+      security:
+        - oauth2:
+            - 'evse:read'
+  '/evses/{evse_id}':
+    parameters:
+      - $ref: '#/components/parameters/evse_id'
+    get:
+      summary: Retrieve an EVSE
+      tags:
+        - EVSEs
+      responses:
+        '200':
+          description: Returns a single EVSE.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EVSE'
+              examples:
+                Example 1:
+                  value:
+                    id: evse01HN2NFV2BBCV0HWP5X7T1905Y
+                    url: 'https://api.ev.energy/v2/evses/evse01HN2NFV2BBCV0HWP5X7T1905Y'
+                    model:
+                      id: emod01HN2NJHAJJAQD32QJ4QXTDSGW
+                      name: EVWC2S22
+                      make:
+                        id: emak01HN2NJQRGDQP0GBE1F7R6PB3D
+                        name: BG SyncEV
+                    user: 'https://api.ev.energy/v2/users/user01HN2NJ9NMRZBXT1H6FT9N7735'
+          headers:
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestRetrieve'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '404':
+          $ref: '#/components/responses/Problem404NotFound'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-evses-evse_id
+      x-stoplight:
+        id: 7zm917wj8m6m7
+      parameters:
+        - $ref: '#/components/parameters/expand'
+        - $ref: '#/components/parameters/version-2'
+      description: 'Retrive a single, specific EVSE''s details.'
+      security:
+        - oauth2:
+            - 'evse:read'
+  /evse_models:
+    get:
+      summary: List EVSE models
+      tags:
+        - EVSEs
+      responses:
+        '200':
+          description: Returns a list of EVSEs.
+          headers:
+            Link:
+              $ref: '#/components/headers/link'
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EVSEModel'
+                  x-stoplight:
+                    id: lny7aynncni2t
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestList'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-evse_models
+      x-stoplight:
+        id: 19fs08z8m1v9o
+      parameters:
+        - $ref: '#/components/parameters/previous'
+        - $ref: '#/components/parameters/next'
+        - $ref: '#/components/parameters/page_size'
+        - $ref: '#/components/parameters/expand'
+        - $ref: '#/components/parameters/version-2'
+        - $ref: '#/components/parameters/available_for_user_id'
+      description: List all the EVSE models known by the ev.energy system.
+      security:
+        - oauth2:
+            - 'evse:read'
+  '/evse_models/{evse_model_id}':
+    get:
+      summary: Retrieve an EVSE model
+      tags:
+        - EVSEs
+      responses:
+        '200':
+          description: Return a single EVSE.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EVSEModel'
+          headers:
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestRetrieve'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '404':
+          $ref: '#/components/responses/Problem404NotFound'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-evse_models-evse_model_id
+      parameters:
+        - $ref: '#/components/parameters/expand'
+        - $ref: '#/components/parameters/version-2'
+      x-stoplight:
+        id: nb7b19hk7ey6w
+      description: 'Retrieve details for a single, specific EVSE model.'
+      security:
+        - oauth2:
+            - 'evse:read'
+    parameters:
+      - $ref: '#/components/parameters/evse_model_id'
+  /evse_makes:
+    get:
+      summary: List EVSE makes
+      tags:
+        - EVSEs
+      responses:
+        '200':
+          description: Return a list of EVSE Makes.
+          headers:
+            Link:
+              $ref: '#/components/headers/link'
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EVSEMake'
+                  x-stoplight:
+                    id: u67ieuuiyc6l2
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestList'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-evse_makes
+      x-stoplight:
+        id: 9y3oaz1ifkvop
+      parameters:
+        - $ref: '#/components/parameters/previous'
+        - $ref: '#/components/parameters/next'
+        - $ref: '#/components/parameters/page_size'
+        - $ref: '#/components/parameters/expand'
+        - $ref: '#/components/parameters/version-2'
+        - $ref: '#/components/parameters/available_for_user_id'
+      description: List all the EVSE makes known by the ev.energy system.
+      security:
+        - oauth2:
+            - 'evse:read'
+    parameters: []
+  '/evse_makes/{evse_make_id}':
+    parameters:
+      - $ref: '#/components/parameters/evse_make_id'
+    get:
+      summary: Retrieve an EVSE make
+      tags:
+        - EVSEs
+      responses:
+        '200':
+          description: Return a single EVSE make.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EVSEMake'
+          headers:
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestRetrieve'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '404':
+          $ref: '#/components/responses/Problem404NotFound'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-evse_makes-evse_make_id
+      x-stoplight:
+        id: dxqoxuhfydk9m
+      parameters:
+        - $ref: '#/components/parameters/expand'
+        - $ref: '#/components/parameters/version-2'
+      description: 'Retrieve details for a single, specific EVSE make.'
+      security:
+        - oauth2:
+            - 'evse:read'
+  '/evses/{evse_id}/status_logs':
+    get:
+      summary: List status logs for an EVSE
+      description: List the historical status logs for a specific EVSE. Used to find out the state of the EVSE at each point it reported in to ev.energy.
+      tags:
+        - EVSEs
+      responses:
+        '200':
+          description: 'List all status logs for a specific EVSE, sorted newest first.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EVSEStatusLog'
+                  x-stoplight:
+                    id: ze3ms3d7uoae5
+          headers:
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            Link:
+              $ref: '#/components/headers/link-timestamps'
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestList'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '404':
+          $ref: '#/components/responses/Problem404NotFound'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-evses-evse_id-status_logs
+      x-stoplight:
+        id: p83ql1le16pk0
+      parameters:
+        - $ref: '#/components/parameters/previous'
+        - $ref: '#/components/parameters/next'
+        - $ref: '#/components/parameters/page_size'
+        - $ref: '#/components/parameters/expand'
+        - $ref: '#/components/parameters/version-2'
+      security:
+        - oauth2:
+            - 'evse:read'
+    parameters:
+      - $ref: '#/components/parameters/evse_id'
+  '/evses/{evse_id}/status_logs/{sampled_at}':
+    parameters:
+      - $ref: '#/components/parameters/evse_id'
+      - schema:
+          type: string
+          format: date-time
+        name: sampled_at
+        in: path
+        required: true
+        description: The time the log's data was recorded on the device.
+    get:
+      summary: Retrieve a status log for an EVSE
+      description: An EVSE status log is uniquely identified by the combination of EVSE ID and the time it was sampled at.
+      tags:
+        - EVSEs
+      responses:
+        '200':
+          description: Retrieve a single status log for a specific EVSE.
+          headers:
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EVSEStatusLog'
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestRetrieve'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '404':
+          $ref: '#/components/responses/Problem404NotFound'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-evses-evse_id-status_logs-timestamp
+      x-stoplight:
+        id: 8v0qmuuuwvo1a
+      parameters:
+        - $ref: '#/components/parameters/version-2'
+        - $ref: '#/components/parameters/expand'
+      security:
+        - oauth2:
+            - 'evse:read'
+  /vehicles:
+    get:
+      summary: List vehicles
+      tags:
+        - Vehicles
+      responses:
+        '200':
+          description: Return a list of vehicles.
+          headers:
+            Link:
+              $ref: '#/components/headers/link'
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Vehicle'
+                  x-stoplight:
+                    id: 4nly29njiglwc
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestList'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-vehicles
+      x-stoplight:
+        id: byq7mfhb4trl8
+      parameters:
+        - $ref: '#/components/parameters/previous'
+        - $ref: '#/components/parameters/next'
+        - $ref: '#/components/parameters/page_size'
+        - $ref: '#/components/parameters/expand'
+        - $ref: '#/components/parameters/version-2'
+      description: List all the vehicles that the authorization token has access to.
+      security:
+        - oauth2:
+            - 'vehicle:read'
+  '/vehicles/{vehicle_id}':
+    parameters:
+      - $ref: '#/components/parameters/vehicle_id'
+    get:
+      summary: Retrieve a vehicle
+      tags:
+        - Vehicles
+      responses:
+        '200':
+          description: Return a single vehicle.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+          headers:
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestRetrieve'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '404':
+          $ref: '#/components/responses/Problem404NotFound'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-vehicles-vehicle_id
+      x-stoplight:
+        id: mx82m7fdz7mew
+      parameters:
+        - $ref: '#/components/parameters/expand'
+        - $ref: '#/components/parameters/version-2'
+      description: 'Retrive a single, specific vehicle''s details.'
+      security:
+        - oauth2:
+            - 'vehicle:read'
+  /vehicle_trims:
+    get:
+      summary: List vehicle trims
+      tags:
+        - Vehicles
+      responses:
+        '200':
+          description: Return a list of vehicle trims.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VehicleTrim'
+                  x-stoplight:
+                    id: 6h5mb4qp50drr
+          headers:
+            Link:
+              $ref: '#/components/headers/link'
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestList'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-vehicle_trims
+      x-stoplight:
+        id: k1a53amf7giw0
+      parameters:
+        - $ref: '#/components/parameters/previous'
+        - $ref: '#/components/parameters/next'
+        - $ref: '#/components/parameters/page_size'
+        - $ref: '#/components/parameters/expand'
+        - $ref: '#/components/parameters/version-2'
+      description: |-
+        List all the vehicle trims known by the ev.energy system.
+
+        Trim refers to a set of features that can be applied to a particular model of vehicle: https://en.wikipedia.org/wiki/Car_model#Trim_level.
+      security:
+        - oauth2:
+            - 'vehicle:read'
+    parameters: []
+  '/vehicle_trims/{vehicle_trim_id}':
+    get:
+      summary: Retrieve a vehicle trim
+      tags:
+        - Vehicles
+      responses:
+        '200':
+          description: Return a single vehicle trim.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleTrim'
+          headers:
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestRetrieve'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '404':
+          $ref: '#/components/responses/Problem404NotFound'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-vehicle_trims-vehicle_trim_id
+      parameters:
+        - $ref: '#/components/parameters/expand'
+        - $ref: '#/components/parameters/version-2'
+      x-stoplight:
+        id: bs9ijzxrktt4h
+      description: |-
+        Retrieve details for a single, specific vehicle trim.
+
+        Trim refers to a set of features that can be applied to a particular model of vehicle: https://en.wikipedia.org/wiki/Car_model#Trim_level.
+      security:
+        - oauth2:
+            - 'vehicle:read'
+    parameters:
+      - $ref: '#/components/parameters/vehicle_trim_id'
+  /vehicle_models:
+    get:
+      summary: List vehicle models
+      tags:
+        - Vehicles
+      responses:
+        '200':
+          description: Return a list of vehicle models.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VehicleModel'
+          headers:
+            Link:
+              $ref: '#/components/headers/link'
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestList'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-vehicle_models
+      parameters:
+        - $ref: '#/components/parameters/previous'
+        - $ref: '#/components/parameters/next'
+        - $ref: '#/components/parameters/page_size'
+        - $ref: '#/components/parameters/expand'
+        - $ref: '#/components/parameters/version-2'
+      x-stoplight:
+        id: nyxgg2lz8n4gx
+      description: List all the vehicle models known by the ev.energy system.
+      security:
+        - oauth2:
+            - 'vehicle:read'
+    parameters: []
+  '/vehicle_models/{vehicle_model_id}':
+    get:
+      summary: Retrieve a vehicle model
+      tags:
+        - Vehicles
+      responses:
+        '200':
+          description: Return a list of vehicle models.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleModel'
+          headers:
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestRetrieve'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '404':
+          $ref: '#/components/responses/Problem404NotFound'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-vehicle_models-vehicle_model_id
+      parameters:
+        - $ref: '#/components/parameters/expand'
+        - $ref: '#/components/parameters/version-2'
+      x-stoplight:
+        id: 2fq8ir4i5w4bn
+      description: 'Retrieve details for a single, specific vehicle model.'
+      security:
+        - oauth2:
+            - 'vehicle:read'
+    parameters:
+      - $ref: '#/components/parameters/vehicle_model_id'
+  /vehicle_makes:
+    get:
+      summary: List vehicle makes
+      tags:
+        - Vehicles
+      responses:
+        '200':
+          description: Return a list of vehicle makes.
+          headers:
+            Link:
+              $ref: '#/components/headers/link'
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VehicleMake'
+                  x-stoplight:
+                    id: 49ok8l94w5lvo
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestList'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-vehicle_makes
+      x-stoplight:
+        id: wn0iisxnkd8pb
+      parameters:
+        - $ref: '#/components/parameters/previous'
+        - $ref: '#/components/parameters/next'
+        - $ref: '#/components/parameters/page_size'
+        - $ref: '#/components/parameters/expand'
+        - $ref: '#/components/parameters/version-2'
+      description: List all the vehicle makes known by the ev.energy system.
+      security:
+        - oauth2:
+            - 'vehicle:read'
+  '/vehicle_makes/{vehicle_make_id}':
+    parameters:
+      - $ref: '#/components/parameters/vehicle_make_id'
+    get:
+      summary: Retrieve a vehicle make
+      description: 'Retrieve details for a single, specific vehicle make.'
+      tags:
+        - Vehicles
+      responses:
+        '200':
+          description: Return a single vehicle make.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleMake'
+          headers:
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestRetrieve'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '404':
+          $ref: '#/components/responses/Problem404NotFound'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-vehicle_makes-vehicle_make_id
+      x-stoplight:
+        id: hpezq6afvgn6w
+      parameters:
+        - $ref: '#/components/parameters/expand'
+        - $ref: '#/components/parameters/version-2'
+      security:
+        - oauth2:
+            - 'vehicle:read'
+  '/vehicles/{vehicle_id}/status_logs':
+    parameters:
+      - $ref: '#/components/parameters/vehicle_id'
+    get:
+      summary: List status logs for a vehicle
+      description: List the historical status logs for a specific Vehicle. Used to find out the state of the Vehicle at each point it reported in to ev.energy.
+      tags:
+        - Vehicles
+      responses:
+        '200':
+          description: 'List all the status logs for a specific Vehicle, sorted newest first.'
+          headers:
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            Link:
+              $ref: '#/components/headers/link-timestamps'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VehicleStatusLog'
+                  x-stoplight:
+                    id: 64u0481t03i7k
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestList'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '404':
+          $ref: '#/components/responses/Problem404NotFound'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-vehicles-vehicle_id-status_logs
+      x-stoplight:
+        id: d2a6w8ubmvmhs
+      parameters:
+        - $ref: '#/components/parameters/version-2'
+        - $ref: '#/components/parameters/previous'
+        - $ref: '#/components/parameters/next'
+        - $ref: '#/components/parameters/page_size'
+        - $ref: '#/components/parameters/expand'
+      security:
+        - oauth2:
+            - 'vehicle:read'
+  '/vehicles/{vehicle_id}/status_logs/{logged_at}':
+    parameters:
+      - $ref: '#/components/parameters/vehicle_id'
+      - schema:
+          type: string
+          format: date-time
+        name: logged_at
+        in: path
+        required: true
+        description: The time that this log was recorded by ev.energy.
+    get:
+      summary: Retrieve a specific status log for a vehicle
+      description: A single status log for a particular vehicle is uniquely identified by the timestamp it was logged at.
+      tags:
+        - Vehicles
+      responses:
+        '200':
+          description: Returns the Vehicle status logged at a specific time.
+          headers:
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleStatusLog'
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestRetrieve'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '404':
+          $ref: '#/components/responses/Problem404NotFound'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-vehicles-vehicle_id-status_logs-timestamp
+      x-stoplight:
+        id: zq7wdbphcaih2
+      parameters:
+        - $ref: '#/components/parameters/version-2'
+      security:
+        - oauth2:
+            - 'vehicle:read'
+  /suppliers:
+    get:
+      summary: 'List suppliers, sorted alphabetically by name.'
+      tags:
+        - Tariffs
+      responses:
+        '200':
+          description: Return a list of Suppliers.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Supplier'
+                  x-stoplight:
+                    id: qaihcx2d21c14
+          headers:
+            Link:
+              $ref: '#/components/headers/link-pages'
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestList'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '404':
+          $ref: '#/components/responses/Problem404NotFound'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-suppliers
+      x-stoplight:
+        id: 5oqluc195ncyw
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/page_size'
+        - $ref: '#/components/parameters/available_for_user_id'
+        - $ref: '#/components/parameters/version-2'
+      description: |-
+        List all the energy suppliers known by the ev.energy system.
+
+        Use the `available_for_user_id` query parameter to narrow the list to only those relevant to a specific user.
+      security:
+        - oauth2:
+            - 'tariff:read'
+  '/suppliers/{supplier_id}':
+    parameters:
+      - $ref: '#/components/parameters/supplier_id'
+    get:
+      summary: Retrieve a supplier
+      tags:
+        - Tariffs
+      responses:
+        '200':
+          description: Return a single supplier.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supplier'
+          headers:
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestRetrieve'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '404':
+          $ref: '#/components/responses/Problem404NotFound'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-suppliers-suppler_id
+      x-stoplight:
+        id: ae7ofq6ulc00a
+      parameters:
+        - $ref: '#/components/parameters/version-2'
+      description: 'Retrieve details for a single, specific energy supplier.'
+      security:
+        - oauth2:
+            - 'tariff:read'
+  /tariffs:
+    get:
+      summary: 'List tariffs, sorted alphabetically by name.'
+      tags:
+        - Tariffs
+      responses:
+        '200':
+          description: Return a list of Tariffs.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tariff'
+                  x-stoplight:
+                    id: 5vmxis01hu63g
+          headers:
+            Link:
+              $ref: '#/components/headers/link-pages'
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestList'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '404':
+          $ref: '#/components/responses/Problem404NotFound'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-tariffs
+      x-stoplight:
+        id: fn3qhgdz0xbgp
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/page_size'
+        - $ref: '#/components/parameters/expand'
+        - $ref: '#/components/parameters/supplier_id_query'
+        - $ref: '#/components/parameters/available_for_user_id'
+        - $ref: '#/components/parameters/include_optional_tariff'
+        - $ref: '#/components/parameters/version-2'
+      description: |-
+        List all the energy supplier tariffs known by the ev.energy system.
+
+        Use the `available_for_user_id` query parameter to narrow the list to only those relevant to a specific user and `supplier` query parameter to list only tariffs for a specific supplier.
+      security:
+        - oauth2:
+            - 'tariff:read'
+  '/tariffs/{tariff_id}':
+    parameters:
+      - $ref: '#/components/parameters/tariff_id'
+    get:
+      summary: Retrieve a tariff
+      tags:
+        - Tariffs
+      responses:
+        '200':
+          description: Return a single Tariff.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tariff'
+          headers:
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestRetrieve'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '404':
+          $ref: '#/components/responses/Problem404NotFound'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-tariffs-tariff_id
+      x-stoplight:
+        id: iy86jtq2k83i6
+      parameters:
+        - $ref: '#/components/parameters/expand'
+        - $ref: '#/components/parameters/available_for_user_id'
+        - $ref: '#/components/parameters/version-2'
+      description: 'Retrieve details for a single, specific tariff.'
+      security:
+        - oauth2:
+            - 'tariff:read'
+  /charging_sub_sessions:
+    get:
+      summary: List charging sub sessions
+      description: List all charging sub sessions visible to the authenticated client.
+      tags:
+        - Charging Sessions
+      responses:
+        '200':
+          description: 'Returns a list of charging sub sessions, sorted newest first.'
+          headers:
+            Link:
+              $ref: '#/components/headers/link'
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChargingSubSession'
+                  x-stoplight:
+                    id: 8n6gh719dm77n
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestList'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-charging_sub_sessions
+      x-stoplight:
+        id: ndz0izsn6bvif
+      parameters:
+        - $ref: '#/components/parameters/version-2'
+        - $ref: '#/components/parameters/previous'
+        - $ref: '#/components/parameters/next'
+        - $ref: '#/components/parameters/page_size'
+        - $ref: '#/components/parameters/expand'
+        - $ref: '#/components/parameters/evse_id_q'
+        - $ref: '#/components/parameters/vehicle_id_q'
+        - $ref: '#/components/parameters/user_id_q'
+        - $ref: '#/components/parameters/energy_delivered_watt_hours__gte'
+        - $ref: '#/components/parameters/is_finished'
+        - $ref: '#/components/parameters/mode'
+      security:
+        - oauth2:
+            - 'charging_session:read'
+  '/charging_sub_sessions/{charging_sub_session_id}':
+    parameters:
+      - $ref: '#/components/parameters/charging_sub_session_id'
+    get:
+      summary: Retrieve a charging sub-session
+      description: 'Retrieve a specific charging sub-session, representing a period of charging in a single mode.'
+      tags:
+        - Charging Sessions
+      responses:
+        '200':
+          description: Returns information about a single charging sub-session.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChargingSubSession'
+          headers:
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestRetrieve'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '404':
+          $ref: '#/components/responses/Problem404NotFound'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-charging_sub_sessions-charging_sub_session_id
+      x-stoplight:
+        id: tjkana9omjrlm
+      parameters:
+        - $ref: '#/components/parameters/version-2'
+        - $ref: '#/components/parameters/expand'
+      security:
+        - oauth2:
+            - 'charging_session:read'
+  /notifications:
+    get:
+      summary: List notifications
+      tags:
+        - Notifications
+      responses:
+        '200':
+          description: Retrieve all current notifications.
+          headers:
+            Link:
+              $ref: '#/components/headers/link'
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+                  x-stoplight:
+                    id: sgpimgmbi9chq
+              examples:
+                Example 1:
+                  value:
+                    - id: notf01HTHKTXVB77901324BCQPF1RB
+                      url: 'https://api.ev.energy/notifications/notf01HTHKTXVB77901324BCQPF1RB'
+                      message_id: ERR0123
+                      category: ERROR
+                      event_time: '2019-08-24T14:15:22Z'
+                      short_text_title: Your car is disconnected
+                      short_text_body: We need to reconnect to keep smart charging
+                      detail_page_title: Your car is disconnected
+                      detail_page_body: |-
+                        Your car has been disconnected. This happens when your password is reset.
+                        We need you to re-authorise ev.energy to access your account in order for us to keep managing your charging.
+                        Blah blah blah.
+                      external_link: 'https://example.com'
+                      external_button_label: More info
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestList'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-notifications
+      x-stoplight:
+        id: qxlylwdb3307s
+      parameters:
+        - $ref: '#/components/parameters/previous'
+        - $ref: '#/components/parameters/next'
+        - $ref: '#/components/parameters/page_size'
+        - $ref: '#/components/parameters/version-2'
+        - $ref: '#/components/parameters/Accept-Language'
+      description: |-
+        Lists notifications for the user making the request. For each
+        notification it returns a category (INFO, ERROR etc) and a title
+        (in the user's language) for display in their inbox.
+  '/notifications/{notification_id}':
+    parameters:
+      - $ref: '#/components/parameters/notification_id'
+    get:
+      summary: Retrieve a notification
+      tags:
+        - Notifications
+      responses:
+        '200':
+          description: Retrieve a specific notification.
+          headers:
+            EvEnergy-Version:
+              $ref: '#/components/headers/version-2'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+              examples:
+                Example 1:
+                  value:
+                    id: notf01HTHKTXVB77901324BCQPF1RB
+                    url: 'https://api.ev.energy/notifications/notf01HTHKTXVB77901324BCQPF1RB'
+                    message_id: ERR0123
+                    category: ERROR
+                    event_time: '2019-08-24T14:15:22Z'
+                    short_text_title: Your car is disconnected
+                    short_text_body: We need to reconnect to keep smart charging
+                    detail_page_title: Your car is disconnected
+                    detail_page_body: |-
+                      Your car has been disconnected. This happens when your password is reset.
+                      We need you to re-authorise ev.energy to access your account in order for us to keep managing your charging.
+                      Blah blah blah.
+                    external_link: 'https://example.com'
+                    external_button_label: More info
+        '400':
+          $ref: '#/components/responses/Problem400BadRequestRetrieve'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '404':
+          $ref: '#/components/responses/Problem404NotFound'
+        '406':
+          $ref: '#/components/responses/Problem406NotAcceptable'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-notifications-notification_id
+      x-stoplight:
+        id: uxw0bvrq29itl
+      parameters:
+        - $ref: '#/components/parameters/version-2'
+        - $ref: '#/components/parameters/Accept-Language'
+      description: |-
+        Retrieves the full details of a specified notification. The title,
+        short_text and long_text fields will be translated into the user's
+        language.
+      security:
+        - oauth2: []
+  /webhook_portal:
+    get:
+      summary: Retrieve access link for webhook portal
+      tags:
+        - Webhooks
+      responses:
+        '200':
+          description: Returns a URL that gives access to the Webhook configuration portal.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    x-stoplight:
+                      id: 0m4ei71zy3dj6
+                    format: uri
+                    example: 'https://app.svix.com/login#key=xyz'
+                    readOnly: true
+          headers:
+            header-0:
+              $ref: '#/components/headers/version-2'
+            header-1:
+              $ref: '#/components/headers/x-ratelimit-limit'
+            header-2:
+              $ref: '#/components/headers/x-ratelimit-remaining'
+            header-3:
+              $ref: '#/components/headers/retry-after'
+        '401':
+          $ref: '#/components/responses/Problem401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Problem403Forbidden'
+        '429':
+          $ref: '#/components/responses/Problem429TooManyRequests'
+      operationId: get-webhook_portal
+      x-stoplight:
+        id: 67qh66tybc8mn
+      description: Generate a one time use link to access the portal to configure webhooks.
+      security:
+        - oauth2: []
+      parameters:
+        - $ref: '#/components/parameters/version-2'
+      requestBody:
+        content: {}
+webhooks:
+  charging_sub_session.created:
+    post:
+      summary: Charging sub-session created
+      description: 'A charging sub-session is created, representing a period of charging in a single mode.'
+      tags:
+        - Charging Sessions
+      requestBody:
+        description: Returns information about the charging sub-session that has been created.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChargingSubSessionCreatedWebhook'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully.
+  charging_sub_session.ended:
+    post:
+      summary: Charging sub-session ended
+      description: 'A charging sub-session has ended, representing a period of charging in a single mode.'
+      tags:
+        - Charging Sessions
+      requestBody:
+        description: Returns information about the charging sub-session that ended.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChargingSubSessionEndedWebhook'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully.
+components:
+  schemas:
+    User:
+      title: User
+      description: 'A resource that represents an individual, human user in the ev.energy system.'
+      type: object
+      x-stoplight:
+        id: wyyoj8x2njyl2
+      required:
+        - id
+        - url
+        - email
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the given user.
+          x-stoplight:
+            id: sd0tvba2d88o3
+          pattern: 'user[A-Z\d]{26}'
+          example: user01HN2NJ9NMRZBXT1H6FT9N7735
+          readOnly: true
+        url:
+          type: string
+          x-stoplight:
+            id: l4zw4z838khna
+          example: 'https://api.ev.energy/v2/users/user01HN2NJ9NMRZBXT1H6FT9N7735'
+          format: uri
+          readOnly: true
+        email:
+          type: string
+          format: email
+          x-stoplight:
+            id: 7sc1tgsxo3l66
+          readOnly: true
+      x-tags:
+        - Users
+    EVSE:
+      title: EVSE
+      description: 'A resource that represents a single, physical piece of hardware for supplying electricity to an electric vehicle.'
+      x-stoplight:
+        id: anmj3abn7x3xi
+      type: object
+      x-tags:
+        - EVSEs
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the given EVSE.
+          pattern: 'evse[A-Z\d]{26}'
+          example: evse01HN2NFV2BBCV0HWP5X7T1905Y
+          readOnly: true
+        url:
+          type: string
+          x-stoplight:
+            id: u6dfob339qdhd
+          example: 'https://api.ev.energy/v2/evses/evse01HN2NFV2BBCV0HWP5X7T1905Y'
+          format: uri
+          readOnly: true
+        model:
+          x-stoplight:
+            id: cyunl5s8cn8tt
+          oneOf:
+            - type: string
+              x-stoplight:
+                id: nz2b3pu457w9y
+              format: uri
+              behavior: Read Only
+              example: 'https://api.ev.energy/v2/evse_models/emod01HN2NJHAJJAQD32QJ4QXTDSGW'
+            - $ref: '#/components/schemas/EVSEModel'
+              x-stoplight:
+                id: hz2c4lnyxg2f3
+          readOnly: true
+        user:
+          x-stoplight:
+            id: ooye2vtph4tr4
+          example: 'https://api.ev.energy/v2/users/user01HN2NJ9NMRZBXT1H6FT9N7735'
+          oneOf:
+            - type: string
+              x-stoplight:
+                id: trbwtxbvn9pts
+              example: 'https://api.ev.energy/v2/users/user01HN2NJ9NMRZBXT1H6FT9N7735'
+              format: uri
+            - $ref: '#/components/schemas/User'
+              x-stoplight:
+                id: ld02knhznhz7o
+          readOnly: true
+        latest_status_log:
+          x-stoplight:
+            id: nbh90iwwixok5
+          example: 'https://api.ev.energy/v2/evse/evse01HN2NV5DY9C262PQKG75GHN8K/status_logs/2024-01-01T11:11:11.1111Z/'
+          oneOf:
+            - type:
+                - string
+                - 'null'
+              x-stoplight:
+                id: s3vqp1en1oaug
+              example: 'https://api.ev.energy/v2/evse/evse01HN2NV5DY9C262PQKG75GHN8K/status_logs/2024-01-01T11:11:11.1111Z/'
+              format: uri
+            - $ref: '#/components/schemas/EVSEStatusLog'
+              x-stoplight:
+                id: uryldggb8lvyt
+          description: An expandable reference to the most recent status log for this EVSE. This can be requested or expanded to get the most accurate information we have on the device's current status.
+          readOnly: true
+        charging_sub_sessions:
+          type: string
+          x-stoplight:
+            id: hje5by3saknkv
+          format: uri
+          example: 'https://api.ev.energy/charging_sub_sessions/?evse_id=evse01HN2NFV2BBCV0HWP5X7T1905Y'
+          description: Provides a pre-constructed URL to list charging sub-sessions involving this EVSE.
+    EVSEModel:
+      title: Model
+      description: A resource representing a model of EVSEs.
+      x-stoplight:
+        id: 7l5imnxbm4tp7
+      type: object
+      properties:
+        id:
+          type: string
+          x-stoplight:
+            id: 0kyjumgf1f97q
+          description: Unique identifier for the given EVSE Model.
+          pattern: 'emod[A-Z\d]{26}'
+          example: emod01HN2NJHAJJAQD32QJ4QXTDSGW
+          readOnly: true
+        url:
+          type: string
+          x-stoplight:
+            id: d9zbw8dguizkf
+          format: uri
+          example: 'https://api.ev.energy/v2/evse_models/emod01HN2NJHAJJAQD32QJ4QXTDSGW'
+          readOnly: true
+        name:
+          type: string
+          x-stoplight:
+            id: dojqufp5oehkr
+          example: EVWC2S22
+          readOnly: true
+        make:
+          x-stoplight:
+            id: ae36q2rkxhwqz
+          oneOf:
+            - type: string
+              x-stoplight:
+                id: 9xzdm0ozzg777
+              format: uri
+              behavior: Read Only
+              example: 'https://api.ev.energy/v2/evse_makes/emak01HN2NJHAJJAQD32QJ4QXTDSGW'
+            - $ref: '#/components/schemas/EVSEMake'
+              x-stoplight:
+                id: l7d5teyz0ohpp
+      x-tags:
+        - EVSEs
+    EVSEMake:
+      title: Make
+      description: A resource representing a manufacturer of EVSEs.
+      x-stoplight:
+        id: 59ixxcl707air
+      type: object
+      properties:
+        id:
+          type: string
+          x-stoplight:
+            id: 37x87bfycgk70
+          description: Unique identifier for the given EVSE Make.
+          pattern: 'emak[A-Z\d]{26}'
+          example: emak01HN2NJQRGDQP0GBE1F7R6PB3D
+          readOnly: true
+        url:
+          type: string
+          x-stoplight:
+            id: ut5hufa0am1x4
+          format: uri
+          example: 'https://api.ev.energy/v2/evse_makes/emak01HN2NJQRGDQP0GBE1F7R6PB3D'
+          readOnly: true
+        name:
+          type: string
+          x-stoplight:
+            id: tjrz2ob8qc01b
+          example: BG SyncEV
+          readOnly: true
+      x-tags:
+        - EVSEs
+    Vehicle:
+      title: Vehicle
+      description: 'A resource representing a single, physical electric vehicle.'
+      x-stoplight:
+        id: xfymcox5qytkf
+      type: object
+      x-tags:
+        - Vehicles
+      properties:
+        id:
+          type: string
+          x-stoplight:
+            id: sqoef8cx9s9zm
+          description: Unique identifier for the given Vehicle.
+          pattern: 'vhcl[A-Z\d]{26}'
+          example: vhcl01HN2NV5DY9C262PQKG75GHN8K
+          readOnly: true
+        url:
+          type: string
+          x-stoplight:
+            id: 4ja97oawg2j5b
+          format: uri
+          example: 'https://api.ev.energy/v2/vehicles/vhcl01HN2NV5DY9C262PQKG75GHN8K'
+          readOnly: true
+        trim:
+          x-stoplight:
+            id: 6nsmtlmvefvoa
+          oneOf:
+            - type: string
+              x-stoplight:
+                id: aeihfu1qimwhs
+              format: uri
+              behavior: Read Only
+              example: 'https://api.ev.energy/v2/trim/vehicle_trim01HN2NV5DY9C262PQKG75GHN8K'
+            - $ref: '#/components/schemas/VehicleTrim'
+              x-stoplight:
+                id: exnrhjvkue3ma
+          description: 'Defaults to a url, but can be expanded to the full Trim resource via the `expand` query parameter.'
+          readOnly: true
+        user:
+          x-stoplight:
+            id: p38uuenzx24uf
+          example: 'https://api.ev.energy/v2/users/user01HN2NJ9NMRZBXT1H6FT9N7735'
+          oneOf:
+            - type: string
+              x-stoplight:
+                id: cbehwr28b80l0
+              format: uri
+              behavior: Read Only
+              example: 'https://api.ev.energy/v2/user/user01HN2NV5DY9C262PQKG75GHN8K'
+            - $ref: '#/components/schemas/User'
+              x-stoplight:
+                id: u25i8c3p5wia6
+          description: 'Defaults to a url, but can be expanded to the full User resource via the `expand` query parameter.'
+        latest_status_log:
+          x-stoplight:
+            id: n4n3bu6ly8845
+          example: 'https://api.ev.energy/v2/vehicles/vhcl01HN2NV5DY9C262PQKG75GHN8K/status_logs/2024-04-17T09:39:45.994584Z/'
+          oneOf:
+            - type:
+                - string
+                - 'null'
+              x-stoplight:
+                id: g1vt9nw8zjb8r
+              example: 'https://api.ev.energy/v2/vehicles/vhcl01HN2NV5DY9C262PQKG75GHN8K/status_logs/2024-04-17T09:39:45.994584Z/'
+              format: uri
+            - $ref: '#/components/schemas/VehicleStatusLog'
+              x-stoplight:
+                id: myl67mwejyeu2
+          description: An expandable reference to the most recent status log for this Vehicle. This can be requested or expanded to get the most accurate information we have on the device's current status.
+        charging_sub_sessions:
+          type: string
+          x-stoplight:
+            id: w2uqcthjggky9
+          format: uri
+          example: 'https://api.ev.energy/charging_sub_sessions/?vehicle_id=vhcl01HN2NV5DY9C262PQKG75GHN8K'
+          description: Provides a pre-constructed URL to list charging sub-sessions involving this Vehicle.
+    VehicleTrim:
+      title: VehicleTrim
+      description: 'A resource representing a "trim level" of a particular vehicle model, which captures a specific set of features.'
+      x-stoplight:
+        id: qlsk53621oc84
+      type: object
+      properties:
+        id:
+          type: string
+          x-stoplight:
+            id: 4fo119znfyivc
+          description: Unique identifier for the given Vehicle Trim.
+          pattern: 'trim[A-Z\d]{26}'
+          example: trim01HN2NZ1040Y8E77CQGXADC2TZ
+          readOnly: true
+        url:
+          type: string
+          x-stoplight:
+            id: m4mynal07a4pe
+          format: uri
+          example: 'https://api.ev.energy/v2/vehicle_trim/trim01HN2NV5DY9C262PQKG75GHN8K'
+          readOnly: true
+        name:
+          type: string
+          x-stoplight:
+            id: 72j1pgrowa1od
+          example: Recharge Core (69 kWh)
+          readOnly: true
+        model:
+          x-stoplight:
+            id: fzscnvz5fciga
+          oneOf:
+            - type: string
+              x-stoplight:
+                id: akifmsd429kx5
+              format: uri
+              behavior: Read Only
+            - $ref: '#/components/schemas/VehicleModel'
+              x-stoplight:
+                id: lrvfp6goqr0n3
+      x-tags:
+        - Vehicles
+    VehicleModel:
+      title: VehicleModel
+      description: A resource representing a model of vehicle.
+      x-stoplight:
+        id: kqnkwr3lmox11
+      type: object
+      properties:
+        id:
+          type: string
+          x-stoplight:
+            id: 0l43bcfk20o4t
+          description: Unique identifier for the given Vehicle Model.
+          pattern: 'vmod[A-Z\d]{26}'
+          example: vmod01HN2P436099PEQ20B7TKPGTEJ
+          readOnly: true
+        url:
+          type: string
+          x-stoplight:
+            id: j77707e2tg242
+          format: uri
+          example: 'https://api.ev.energy/vehicle_models/vmod01HN2P436099PEQ20B7TKPGTEJ'
+          readOnly: true
+        name:
+          type: string
+          x-stoplight:
+            id: yxvkotq67bkm0
+          example: C40
+          readOnly: true
+        make:
+          x-stoplight:
+            id: yaa133aw2hfbi
+          oneOf:
+            - type: string
+              x-stoplight:
+                id: vhy5jjm96p86b
+              format: uri
+              behavior: Read Only
+              example: 'https://api.ev.energy/v2/vehicle_makes/vmak01HN2P75GBNFRJPCZJXEFVXH5E'
+            - $ref: '#/components/schemas/VehicleMake'
+              x-stoplight:
+                id: zzn6b0hfxneoz
+      x-tags:
+        - Vehicles
+    VehicleMake:
+      title: VehicleMake
+      description: A resource representing a vehicle manufacturer.
+      x-stoplight:
+        id: ijx85kl0ltrtc
+      type: object
+      properties:
+        id:
+          type: string
+          x-stoplight:
+            id: 1hyspfafu6rdi
+          description: Unique identifier for the given Vehicle Make.
+          pattern: 'vmak[A-Z\d]{26}'
+          example: vmak01HN2P75GBNFRJPCZJXEFVXH5E
+          readOnly: true
+        url:
+          type: string
+          x-stoplight:
+            id: 0djywdsg8vryt
+          format: uri
+          example: 'https://api.ev.energy/v2/vehicle_makes/vmak01HN2P75GBNFRJPCZJXEFVXH5E'
+          readOnly: true
+        name:
+          type: string
+          x-stoplight:
+            id: yy92m2bj51gco
+          example: Volvo
+          readOnly: true
+      x-tags:
+        - Vehicles
+    ChargingSubSession:
+      title: SubSession
+      x-stoplight:
+        id: wisz2k2f34cx5
+      type: object
+      description: Represents periods within a Charging Session when the same mode of scheduling was active. Begins either when a vehicle is plugged in or when it switches mode (eg. from smart to boost) and ends either when the vehicle is unplugged or the mode switches again.
+      x-tags:
+        - Charging sessions
+      examples:
+        - id: csub01HSX81AJCX2KNRKBYTAZPCZ5M
+          url: 'https://api.ev.energy/v2/charging_sub_sessions/csub01HSX81AJCX2KNRKBYTAZPCZ5M'
+          start: '2019-08-24T14:15:22Z'
+          end: '2019-08-24T14:15:22Z'
+          mode: smart
+          vehicle: 'https://api.ev.energy/v2/vehicles/vhcl01HN2NJ9NMRZBXT1H6FT9N7735'
+          evse: 'https://api.ev.energy/v2/evses/evse01HN2NFV2BBCV0HWP5X7T1905Y'
+          energy_delivered_watt_hours: 2300
+          cost: 634
+          percentage_added: 30
+          location:
+            name: Home
+          currency: GBP
+      properties:
+        id:
+          type: string
+          x-stoplight:
+            id: t95zxdsyiajw6
+          description: Unique identifier for the given Charging sub-session.
+          pattern: 'csub[A-Z\d]{26}'
+          example: csub01HSX81AJCX2KNRKBYTAZPCZ5M
+          readOnly: true
+        url:
+          type: string
+          x-stoplight:
+            id: 2ns6f49nw3fai
+          format: uri
+          example: 'https://api.ev.energy/v2/charging_sub_sessions/csub01HSX81AJCX2KNRKBYTAZPCZ5M'
+        start:
+          type: string
+          x-stoplight:
+            id: nl2dyngmo2xxe
+          format: date-time
+          readOnly: true
+        end:
+          type:
+            - string
+            - 'null'
+          x-stoplight:
+            id: fefwwyakkxt9j
+          format: date-time
+          readOnly: true
+        mode:
+          x-stoplight:
+            id: s482mbdtprp59
+          enum:
+            - SMART
+            - BOOST
+            - UNMANAGED_HOME
+            - UNMANAGED_OTG
+            - MANAGED_OTG
+          description: |-
+            The type of scheduling applied during this period.
+
+            smart: Actively optimised charging
+
+            boost: Charge immediately
+
+            unmanaged: No optimisation
+          readOnly: true
+        vehicle:
+          x-stoplight:
+            id: qzb6mu2svgjdx
+          oneOf:
+            - type:
+                - string
+                - 'null'
+              x-stoplight:
+                id: io9d3u5szv6kp
+              example: 'https://api.ev.energy/v2/vehicles/vhcl01HN2NJ9NMRZBXT1H6FT9N7735'
+              behavior: Read Only
+              format: uri
+            - $ref: '#/components/schemas/Vehicle'
+              x-stoplight:
+                id: hsxngry5sjcp3
+        evse:
+          x-stoplight:
+            id: 3m25kepd9hf1t
+          oneOf:
+            - type:
+                - string
+                - 'null'
+              x-stoplight:
+                id: odq4qe114u8kv
+              example: 'https://api.ev.energy/v2/evses/evse01HN2NFV2BBCV0HWP5X7T1905Y'
+              format: uri
+            - $ref: '#/components/schemas/EVSE'
+              x-stoplight:
+                id: rg4kg8gej6cl5
+        energy_delivered_watt_hours:
+          type: integer
+          x-stoplight:
+            id: iwgm2l1e1yetf
+          example: 2300
+          description: Net energy delivered to the vehicle during this sub-session in Wh.
+          readOnly: true
+        cost:
+          type: integer
+          x-stoplight:
+            id: pr2clwl1uj7lg
+          example: 634
+        percentage_added:
+          type: number
+          x-stoplight:
+            id: zvuglfgetag9l
+          example: 30
+        location:
+          type: object
+          x-stoplight:
+            id: xvacf26t8qb8u
+          properties:
+            name:
+              type: string
+              x-stoplight:
+                id: h9bvvfv5kwlwy
+              example: Home
+        currency:
+          type: string
+          x-stoplight:
+            id: 8nhuwfq5l8a6o
+          example: GBP
+        savings_cost:
+          type: integer
+          x-stoplight:
+            id: s2vrbipqvb9cu
+          description: Cost Savings in Minor Unit of Currency.
+          readOnly: true
+        savings_co2_grams:
+          type: integer
+          x-stoplight:
+            id: gg0rg6z4iyg71
+          description: Savings of Carbon in Grams of CO2.
+          readOnly: true
+        incentive_earned:
+          type:
+            - integer
+            - 'null'
+          x-stoplight:
+            id: adurlpa9hclyq
+          example: 99
+          description: Incentive earned in minor unit of currency.
+    RFC9547ProblemDetail:
+      title: RFC 9547 Problem Detail
+      description: 'For more information see https://datatracker.ietf.org/doc/html/rfc9457.'
+      x-stoplight:
+        id: fgdsacyawbqn1
+      type: object
+      required:
+        - title
+        - detail
+      properties:
+        type:
+          type: string
+          format: uri
+          example: 'https://api.ev.energy/v2/problems/example-problem/'
+        status:
+          type: number
+          example: 400
+        title:
+          type: string
+          example: Short description
+        detail:
+          type: string
+          example: 'Long, more specific description.'
+        instance:
+          type: string
+          format: uri
+          example: 'https://api.ev.energy/v2/users/user01HN2P75GBNFRJPCZJXEFVXH5E'
+        notification:
+          $ref: '#/components/schemas/Notification'
+          x-stoplight:
+            id: nfsuibs2y03aw
+    Tariff:
+      title: Tariff
+      x-stoplight:
+        id: ycvyuq7fvvrim
+      type: object
+      examples:
+        - id: tari01HN2NJ9NMRZBXT1H6FT9N7735
+          url: 'https://api.ev.energy/v2/tariffs/tari01HN2NV5DY9C262PQKG75GHN8K'
+          supplier: 'https://api.ev.energy/v2/suppliers/supl01HN2P75GBNFRJPCZJXEFVXH5E'
+          name: Fangorn Biomass
+          currency: GBP
+          daily_prices:
+            peak:
+              price: '0.30'
+              times:
+                - start: '18:00:00'
+                  end: '00:00:00'
+            mid_peak:
+              price: '0.20'
+              times:
+                - start: '10:00:00'
+                  end: '08:00:00'
+            off_peak:
+              price: '0.10'
+              times:
+                - start: '08:00:00'
+                  end: '18:00:00'
+      description: 'Note: daily_prices and type are only available under contract. Please reach out to your account manager to find out more.'
+      required:
+        - id
+        - url
+        - supplier
+        - name
+        - currency
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the given user.
+          x-stoplight:
+            id: 1fk6mvq7injn8
+          pattern: 'tari[A-Z\d]{26}'
+          example: tari01HN2NJ9NMRZBXT1H6FT9N7735
+          readOnly: true
+        url:
+          type: string
+          x-stoplight:
+            id: nd8emclq49gr5
+          format: uri
+          example: 'https://api.ev.energy/v2/tariffs/tari01HN2NV5DY9C262PQKG75GHN8K'
+        supplier:
+          x-stoplight:
+            id: 1oomkhkvwr66e
+          oneOf:
+            - x-stoplight:
+                id: mqrrrcnn0ktor
+              type: string
+              format: uri
+              example: 'https://api.ev.energy/v2/suppliers/supl01HN2P75GBNFRJPCZJXEFVXH5E'
+            - $ref: '#/components/schemas/Supplier'
+              x-stoplight:
+                id: b5rn27oejidyw
+          description: The energy company that supplies this tariff.
+        name:
+          type: string
+          x-stoplight:
+            id: cqrz5gmpens4f
+          example: Fangorn Biomass
+        currency:
+          type: string
+          x-stoplight:
+            id: 7cf0bljsw0n91
+          example: GBP
+        highlighted:
+          type: boolean
+          x-stoplight:
+            id: r6adrjl5ovn9w
+          description: A highlighted tariff is one that is often selected by users.
+        type:
+          x-stoplight:
+            id: 80oqwp13m92is
+          enum:
+            - FLAT_RATE
+            - DUAL_RATE
+            - THREE_RATE
+            - DYNAMIC
+            - EXTERNALLY_MANAGED
+            - OTHER
+        daily_prices:
+          $ref: '#/components/schemas/DailyPrices'
+          x-stoplight:
+            id: 3wqy398hk7hff
+          description: |-
+            The times returned here are localised to the timezone the tariff is in.
+            The timezone is returned in `timezone_name`.
+        timezone_name:
+          type: string
+          x-stoplight:
+            id: 0gjuz3e1ffop6
+          example: Europe/London
+      x-tags:
+        - Tariffs
+    Supplier:
+      title: Supplier
+      x-stoplight:
+        id: rddy52ye7g4tw
+      type: object
+      description: An energy company who supplies electricity tariffs.
+      required:
+        - id
+        - url
+        - name
+        - icon
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the given user.
+          x-stoplight:
+            id: 6igsoygktgubb
+          pattern: 'supl[A-Z\d]{26}'
+          example: supl01HN2NJ9NMRZBXT1H6FT9N7735
+          readOnly: true
+        url:
+          type: string
+          x-stoplight:
+            id: qtoajv2ij5q5z
+          format: uri
+          example: 'https://api.ev.energy/v2/suppliers/supl01HN2NV5DY9C262PQKG75GHN8K'
+        name:
+          type: string
+          x-stoplight:
+            id: pxtp3m0zz13xr
+          example: Rivendell Renewables
+        icon:
+          type: string
+          x-stoplight:
+            id: osh805908zp2s
+          format: uri
+          example: 'https://cdn.example.com/rivendell_renewables.jpg'
+        highlighted:
+          type: boolean
+          x-stoplight:
+            id: n7zbi1p205eh8
+          description: A highlighted supplier is one that is often selected by users.
+      x-tags:
+        - Tariffs
+    Times:
+      title: Times
+      description: Defines a period of time.
+      x-stoplight:
+        id: pr4casvuu71yy
+      type: object
+      properties:
+        start:
+          type: string
+          x-stoplight:
+            id: mien3bhd76s98
+          example: '18:00:00'
+          format: time
+        end:
+          type: string
+          x-stoplight:
+            id: 223irbojdlrfx
+          format: time
+          example: '00:00:00'
+      x-tags:
+        - Tariffs
+    PriceSummary:
+      title: PriceSummary
+      description: A single price for a certain time range.
+      x-stoplight:
+        id: lvf6t3qm9cgq4
+      type: object
+      properties:
+        price:
+          type: string
+          x-stoplight:
+            id: oxf7ofaazu5ow
+          example: '0.10'
+        times:
+          type: array
+          x-stoplight:
+            id: b7i78btuv6oq8
+          items:
+            $ref: '#/components/schemas/Times'
+            x-stoplight:
+              id: 47w8xf59b4ojx
+      examples:
+        - price: '0.10'
+          times:
+            - start: '18:00:00'
+              end: '00:00:00'
+      x-tags:
+        - Tariffs
+    DailyPrices:
+      title: DailyPrices
+      description: Information about the tariff's prices for different parts of the day.
+      x-stoplight:
+        id: py5p5yff200lf
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      maxProperties: 3
+      required:
+        - peak
+      properties:
+        peak:
+          $ref: '#/components/schemas/PriceSummary'
+          x-stoplight:
+            id: g1te7e2zuvqtl
+        mid_peak:
+          $ref: '#/components/schemas/PriceSummary'
+          x-stoplight:
+            id: 2ga3a8xdzbnoa
+        off_peak:
+          $ref: '#/components/schemas/PriceSummary'
+          x-stoplight:
+            id: 6fyjxjmytext2
+      x-tags:
+        - Tariffs
+    VehicleStatusLog:
+      title: VehicleStatusLog
+      description: Records the state of a Vehicle at a particular point in time.
+      x-stoplight:
+        id: og7x6a7bwnfnx
+      type: object
+      x-tags:
+        - Vehicles
+      properties:
+        url:
+          type: string
+          x-stoplight:
+            id: a7b0o2jirts8h
+          example: 'https://api.ev.energy/v2/vehicles/vhcl01HN2NV5DY9C262PQKG75GHN8K/status_logs/2024-01-01T11:11:11.1111Z/'
+          format: uri
+          readOnly: true
+        logged_at:
+          type: string
+          x-stoplight:
+            id: va5gsyhyofk64
+          description: The date and time this status information was received and stored.
+          format: date-time
+          readOnly: true
+        sampled_at:
+          type: string
+          x-stoplight:
+            id: cfesy9i68ouu4
+          format: date-time
+          description: 'The date and time when this data was recorded. Likely to be earlier than `logged_at`, but how much earlier depends on the integration and other factors.'
+        vehicle:
+          x-stoplight:
+            id: rfxb8awkjma40
+          oneOf:
+            - type: string
+              x-stoplight:
+                id: 63gb0bry2r5jy
+              format: uri
+              example: 'https://api.ev.energy/v2/vehicles/vhcl01HN2NV5DY9C262PQKG75GHN8K'
+            - $ref: '#/components/schemas/Vehicle'
+              x-stoplight:
+                id: kwo2bmirsfgle
+        state_of_charge_percentage:
+          type:
+            - integer
+            - 'null'
+          x-stoplight:
+            id: ru4src1shqjbe
+          example: 70
+          description: 'How full the vehicle''s battery is, as a percentage. Will be null if we are unable to get this information from the vehicle''s telematics.'
+          readOnly: true
+        is_charging:
+          type:
+            - boolean
+            - 'null'
+          x-stoplight:
+            id: 98yg16co10o9r
+          default: false
+          description: Is the vehicle currently receiving charge? Will be null if we are unable to get this information from the vehicle's telematics.
+          readOnly: true
+        is_plugged_in:
+          type:
+            - boolean
+            - 'null'
+          x-stoplight:
+            id: 5g6hhsg05ah2a
+          default: false
+          description: Is the vehicle currently connected to an EVSE? Will be null if we are unable to get this information from the vehicle's telematics.
+          readOnly: true
+        charge_rate_watts:
+          type:
+            - integer
+            - 'null'
+          x-stoplight:
+            id: o31p6j9y1fngo
+          description: 'The current rate of charge being received, in watts. Will be null if we are unable to get this information from the Vehicle integration.'
+    EVSEStatusLog:
+      title: EVSEStatusLog
+      description: Records the state of an EVSE at a particular point in time.
+      x-stoplight:
+        id: c19zkzvqcn62q
+      type: object
+      x-tags:
+        - EVSEs
+      properties:
+        url:
+          type: string
+          x-stoplight:
+            id: ye730pojkfkqw
+          format: uri
+          example: 'https://api.ev.energy/v2/evse/evse01HN2NV5DY9C262PQKG75GHN8K/status_logs/2024-01-01T11:11:11.1111Z/'
+          readOnly: true
+        sampled_at:
+          type: string
+          format: date-time
+          x-stoplight:
+            id: ux6ka0qqhg775
+          description: The date and time this status information was sampled on the EVSE.
+        logged_at:
+          type: string
+          x-stoplight:
+            id: cfesy9i68ouu4
+          format: date-time
+          description: 'The date and time when this data was recorded. Likely to be later than `sampled_at`, but how much later depends on the integration and other factors.'
+        evse:
+          x-stoplight:
+            id: zxsdj1twrb4ga
+          oneOf:
+            - type: string
+              x-stoplight:
+                id: wpmqr467ydjgs
+              format: uri
+              example: 'https://api.ev.energy/v2/evses/evse01HN2NFV2BBCV0HWP5X7T1905Y'
+            - $ref: '#/components/schemas/EVSE'
+              x-stoplight:
+                id: iuv4yclfhtevy
+        is_plugged_in:
+          type:
+            - boolean
+            - 'null'
+          x-stoplight:
+            id: a1bhr7wf8adsn
+          description: Is there currently a vehicle connected to the EVSE? Will be null if we are unable to get this information from the EVSE integration.
+        is_charging:
+          type:
+            - boolean
+            - 'null'
+          x-stoplight:
+            id: lycgn0a178rsd
+          description: Is the EVSE currently delivering charge? Will be null if we are unable to get this information from the EVSE integration.
+        charge_rate_watts:
+          type:
+            - integer
+            - 'null'
+          x-stoplight:
+            id: 4ofd0d361tfar
+          description: 'The current rate of charge delivery, in watts. Will be null if we are unable to get this information from the EVSE integration.'
+    Notification:
+      title: Notification
+      description: Something that the user should be informed about.
+      x-stoplight:
+        id: zlmu1qagxu15z
+      type: object
+      required:
+        - id
+        - url
+        - message_id
+        - category
+        - event_time
+        - short_text_title
+        - short_text_body
+      properties:
+        id:
+          type: string
+          x-stoplight:
+            id: vvof3tqd1omyl
+          pattern: 'notf[A-Z\d]{26}'
+          example: notf01HTHKTXVB77901324BCQPF1RB
+          description: Unique identifier for the Notification
+        url:
+          type: string
+          x-stoplight:
+            id: kqf46ta6fazwm
+          format: uri
+          example: 'https://api.ev.energy/notifications/notf01HTHKTXVB77901324BCQPF1RB'
+        message_id:
+          type: string
+          x-stoplight:
+            id: dmp2sm8ey9bmp
+          description: Internal identifier for this notification type. E.g. 'ERR0023'
+        category:
+          x-stoplight:
+            id: t5w0ni5o5gb2r
+          description: Category of this notification type
+          enum:
+            - ERROR
+            - WARNING
+            - INFO
+        event_time:
+          type: string
+          x-stoplight:
+            id: ygzbrrfql6azt
+          format: date-time
+          description: The timestamp of the event described by this notification
+        short_text_title:
+          type: string
+          x-stoplight:
+            id: jcs33lkxxko8q
+          description: Short title for the notification
+          maxLength: 33
+        short_text_body:
+          type: string
+          x-stoplight:
+            id: xhk6rkma6ulhn
+          description: Short description of the event being notified
+          maxLength: 49
+        detail_page_title:
+          type: string
+          x-stoplight:
+            id: oab21e04pl82s
+          description: Title of a help page giving more information about this notification
+        detail_page_body:
+          type: string
+          x-stoplight:
+            id: hlwvmqoodwn61
+          description: Text of a help page giving more information about this notification
+        external_link:
+          type: string
+          x-stoplight:
+            id: s5x1r9voeehfn
+          format: uri
+          description: URL of a web page giving further information about this notification
+        external_button_label:
+          type: string
+          x-stoplight:
+            id: wfsay5ly4mr9s
+          description: Text to be displayed on a button leading to the external_link location
+          maxLength: 37
+      examples:
+        - id: notf01HTHKTXVB77901324BCQPF1RB
+          url: 'https://api.ev.energy/notifications/notf01HTHKTXVB77901324BCQPF1RB'
+          message_id: ERR0123
+          category: ERROR
+          event_time: '2019-08-24T14:15:22Z'
+          short_text_title: Your car is disconnected
+          short_text_body: We need to reconnect to keep smart charging your car
+          detail_page_title: Your car is disconnected
+          detail_page_body: |-
+            Your car has been disconnected. This happens when your password is reset.
+            We need you to re-authorise ev.energy to access your account in order for us to keep managing your charging.
+            Blah blah blah.
+          external_link: 'https://example.com'
+          external_button_label: More info
+    ChargingSubSessionCreatedWebhook:
+      title: Charging Sub Session Created Webhook
+      description: Webhook payload about a charging sub session being created
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - charging_sub_session.created
+        timestamp:
+          type: string
+          format: date-time
+          description: The timestamp of the event described by this webhook
+        data:
+          type: object
+          description: The charging sub session being created
+          $ref: '#/components/schemas/ChargingSubSession'
+      examples:
+        - type: charging_sub_session.created
+          timestamp: '2022-11-03T20:26:10.344522Z'
+          data:
+            id: csub01HSX81AJCX2KNRKBYTAZPCZ5M
+            url: 'https://api.ev.energy/v2/charging_sub_sessions/csub01HSX81AJCX2KNRKBYTAZPCZ5M'
+            start: '2019-08-24T14:15:22Z'
+            end: null
+            mode: smart
+            vehicle: 'https://api.ev.energy/v2/vehicles/vhcl01HN2NJ9NMRZBXT1H6FT9N7735'
+            evse: 'https://api.ev.energy/v2/evses/evse01HN2NFV2BBCV0HWP5X7T1905Y'
+            energy_delivered_watt_hours: 0
+            cost: 0
+            percentage_added: 0
+            location:
+              name: Home
+            currency: GBP
+      x-stoplight:
+        id: 1ezkya2r53lyk
+    ChargingSubSessionEndedWebhook:
+      title: Charging Sub Session Ended Webhook
+      description: Webhook payload about a charging sub session ending
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - charging_sub_session.ended
+        timestamp:
+          type: string
+          format: date-time
+          description: The timestamp of the event described by this webhook
+        data:
+          type: object
+          description: The charging sub session being created
+          $ref: '#/components/schemas/ChargingSubSession'
+      examples:
+        - type: charging_sub_session.ended
+          timestamp: '2022-11-03T20:26:10.344522Z'
+          data:
+            id: csub01HSX81AJCX2KNRKBYTAZPCZ5M
+            url: 'https://api.ev.energy/v2/charging_sub_sessions/csub01HSX81AJCX2KNRKBYTAZPCZ5M'
+            start: '2019-08-24T14:15:22Z'
+            end: '2019-08-24T14:15:22Z'
+            mode: smart
+            vehicle: 'https://api.ev.energy/v2/vehicles/vhcl01HN2NJ9NMRZBXT1H6FT9N7735'
+            evse: 'https://api.ev.energy/v2/evses/evse01HN2NFV2BBCV0HWP5X7T1905Y'
+            energy_delivered_watt_hours: 2300
+            cost: 634
+            percentage_added: 30
+            location:
+              name: Home
+            currency: GBP
+      x-stoplight:
+        id: on8o1ejbgc8cz
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: 'https://api.ev.energy/o/token/'
+          refreshUrl: 'https://api.ev.energy/o/token/'
+          scopes:
+            'evse:read': ''
+            'vehicle:read': ''
+            'user:read': ''
+            'charging_session:read': ''
+            'tariff:read': ''
+        authorizationCode:
+          authorizationUrl: 'https://api.ev.energy/o/authorize/'
+          tokenUrl: 'https://api.ev.energy/o/token/'
+          refreshUrl: 'https://api.ev.energy/o/token/'
+          scopes: {}
+  requestBodies: {}
+  parameters:
+    previous:
+      name: page_before
+      description: Return results from the page after this ID.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: '[a-z]{4}[A-Z\d]{26}'
+        example: xmpl01HNFZM7Q8FXASZXYZ6XM3TQRR
+    next:
+      name: page_after
+      description: Return results from the page before this ID.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: '[a-z]{4}[A-Z\d]{26}'
+        example: xmpl01HNFZM7Q8FXASZXYZ6XM3TQRR
+    page:
+      name: page
+      description: The page number to return results for.
+      in: query
+      required: false
+      schema:
+        type: number
+        example: 2
+    page_size:
+      name: page_size
+      description: Specify the number of results to return per page.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 25
+        minimum: 1
+        maximum: 100
+        example: 10
+    expand:
+      name: expand
+      in: query
+      schema:
+        type: string
+        example: user
+      description: Specify a url field to expand into a nested resource.
+    vehicle_id:
+      name: vehicle_id
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: 'vhcl[A-Z\d]{26}'
+        example: vhcl01HN2NV5DY9C262PQKG75GHN8K
+      description: The ID of the specific vehicle to retrieve.
+    evse_id:
+      name: evse_id
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: 'evse[A-Z\d]{26}'
+        example: evse01HN2NV5DY9C262PQKG75GHN8K
+      description: The ID of the specific EVSE to retrieve.
+    user_id:
+      name: user_id
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: 'user[A-Z\d]{26}'
+        example: user01HN2NV5DY9C262PQKG75GHN8K
+      description: The ID of the specific user to retrieve.
+    vehicle_trim_id:
+      name: vehicle_trim_id
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: 'trim[A-Z\d]{26}'
+        example: trim01HN2NV5DY9C262PQKG75GHN8K
+      description: The ID of the specific vehicle trim to retrieve.
+    vehicle_model_id:
+      name: vehicle_model_id
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: 'vmod[A-Z\d]{26}'
+        example: vmod01HN2NV5DY9C262PQKG75GHN8K
+      description: The ID of the specific vehicle model to retrieve.
+    vehicle_make_id:
+      name: vehicle_make_id
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: 'vmak[A-Z\d]{26}'
+        example: vmak01HN2NV5DY9C262PQKG75GHN8K
+      description: The ID of the specific vehicle make to retrieve.
+    evse_model_id:
+      name: evse_model_id
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: 'emod[A-Z\d]{26}'
+        example: emod01HN2NV5DY9C262PQKG75GHN8K
+      description: The ID of the specific EVSE model to retrieve.
+    evse_make_id:
+      name: evse_make_id
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: 'emak[A-Z\d]{26}'
+        example: emak01HN2NV5DY9C262PQKG75GHN8K
+      description: The ID of the specific EVSE make to retrieve.
+    supplier_id:
+      name: supplier_id
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: 'supl[A-Z\d]{26}'
+        example: supl01HN2NJ9NMRZBXT1H6FT9N7735
+      description: The ID of the specific supplier to retrieve.
+    tariff_id:
+      name: tariff_id
+      in: path
+      schema:
+        type: string
+        pattern: 'tari[A-Z\d]{26}'
+        example: tari01HN2NJ9NMRZBXT1H6FT9N7735
+      required: true
+      description: The ID of the specific tariff to retrieve.
+    supplier_id_query:
+      name: supplier_id
+      in: query
+      required: false
+      schema:
+        type: string
+      description: The ID of the supplier to filter by.
+    available_for_user_id:
+      name: available_for_user_id
+      in: query
+      schema:
+        type: string
+        pattern: 'user[A-Z\d]{26}'
+        example: user01HN2NV5DY9C262PQKG75GHN8K
+      description: Filter to only return resources available in the user's region and program.
+    include_optional_tariff:
+      name: include_optional
+      in: query
+      schema:
+        type: string
+        enum:
+          - daily_prices
+        example: daily_prices
+      allowReserved: false
+      allowEmptyValue: false
+      description: Include optional tariffs.
+    version-2:
+      name: EvEnergy-Version
+      description: Specify the version of this endpoint to use.
+      required: false
+      in: header
+      schema:
+        type: number
+        enum:
+          - 2
+    Accept-Language:
+      name: Accept-Language
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Indicates the natural language and locale that the client prefers.
+    evse_id_q:
+      name: evse_id
+      in: query
+      schema:
+        type: string
+        pattern: 'evse[A-Z\d]{26}'
+        example: evse01HN2NV5DY9C262PQKG75GHN8K
+      description: Filter to only resources related to the given EVSE.
+    vehicle_id_q:
+      name: vehicle_id
+      in: query
+      schema:
+        type: string
+        pattern: 'vhcl[A-Z\d]{26}'
+        example: vhcl01HN2NV5DY9C262PQKG75GHN8K
+      description: Filter to only resources related to the given Vehicle.
+    notification_id:
+      name: notification_id
+      description: The ID of the specific notification to retrieve.
+      in: path
+      required: true
+      schema:
+        type: string
+    charging_sub_session_id:
+      name: charging_sub_session_id
+      description: Uniquely identify a specific charging sub-session.
+      in: path
+      schema:
+        type: string
+        pattern: 'csub[A-Z\d]{26}'
+        example: csub01HSX81AJCX2KNRKBYTAZPCZ5M
+      required: true
+    user_id_q:
+      name: user_id
+      in: query
+      required: false
+      schema:
+        type: string
+        example: me
+      description: Filter collection to only resources owned by a specific user.
+    energy_delivered_watt_hours__gte:
+      name: energy_delivered_watt_hours__gte
+      in: query
+      schema:
+        type: integer
+        example: 500
+      description: Filters for values greater than or equal to.
+    is_finished:
+      name: is_finished
+      in: query
+      required: false
+      schema:
+        type: boolean
+        example: false
+      description: Filters for sessions that are finished.
+    mode:
+      name: mode
+      in: query
+      required: false
+      schema:
+        type: string
+        example: SMART
+        enum:
+          - SMART
+          - BOOST
+          - UNMANAGED_HOME
+          - UNMANAGED_OTG
+          - MANAGED_OTG
+      description: Filters sessions to only return sessions with this mode.
+  responses:
+    Problem401Unauthorized:
+      description: You need to authorise requests to access this resource.
+      content:
+        application/problem+json:
+          schema:
+            type: object
+            required:
+              - title
+              - detail
+            properties:
+              status:
+                type: number
+                example: 401
+              title:
+                type: string
+                example: Unauthorized
+              detail:
+                type: string
+                example: Authentication credentials were not provided.
+      headers:
+        EvEnergy-Version:
+          $ref: '#/components/headers/version-2'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/x-ratelimit-limit'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/x-ratelimit-remaining'
+    Problem403Forbidden:
+      description: You do not have permission to perform this action.
+      content:
+        application/problem+json:
+          schema:
+            type: object
+            required:
+              - title
+              - detail
+            properties:
+              status:
+                type: number
+                example: 403
+              title:
+                type: string
+                example: Forbidden
+              detail:
+                type: string
+                example: You do not have permission to perform this action.
+      headers:
+        EvEnergy-Version:
+          $ref: '#/components/headers/version-2'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/x-ratelimit-limit'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/x-ratelimit-remaining'
+    Problem404NotFound:
+      description: This resource either does not exist or the client is not authorized to access it.
+      content:
+        application/problem+json:
+          schema:
+            type: object
+            required:
+              - title
+              - detail
+            properties:
+              status:
+                type: number
+                example: 404
+              title:
+                type: string
+                example: Not found
+              detail:
+                type: string
+                example: Resource does not exist or cannot be accessed.
+      headers:
+        EvEnergy-Version:
+          $ref: '#/components/headers/version-2'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/x-ratelimit-limit'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/x-ratelimit-remaining'
+    Problem406NotAcceptable:
+      description: Could not satisfy the request Accept header.
+      content:
+        application/problem+json:
+          schema:
+            type: object
+            required:
+              - title
+              - detail
+            properties:
+              status:
+                type: number
+                example: 406
+              title:
+                type: string
+                example: Not Acceptable
+              detail:
+                type: string
+                example: Could not satisfy the request Accept header.
+      headers:
+        EvEnergy-Version:
+          $ref: '#/components/headers/version-2'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/x-ratelimit-limit'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/x-ratelimit-remaining'
+    Problem400BadRequestList:
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/RFC9547ProblemDetail'
+          examples:
+            Invalid Pagination Parameter:
+              $ref: '#/components/examples/ProblemInvalidPaginationParameter'
+            Unsupported Version:
+              $ref: '#/components/examples/ProblemUnsupportedVersion'
+      description: A problem with the request's parameters prevented it being fulfilled.
+      headers:
+        EvEnergy-Version:
+          $ref: '#/components/headers/version-2'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/x-ratelimit-limit'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/x-ratelimit-remaining'
+    Problem400BadRequestRetrieve:
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/RFC9547ProblemDetail'
+          examples:
+            Unsupported Version:
+              $ref: '#/components/examples/ProblemUnsupportedVersion'
+      description: A problem with the request's parameters prevented it being fulfilled.
+      headers:
+        EvEnergy-Version:
+          $ref: '#/components/headers/version-2'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/x-ratelimit-limit'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/x-ratelimit-remaining'
+    Problem429TooManyRequests:
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/RFC9547ProblemDetail'
+          examples:
+            Example 1:
+              value:
+                type: 'https://api.ev.energy/v2/problems/rate-limit-exceeded/'
+                status: 429
+                title: Too Many Requests
+                detail: Request was rate limited. Try again in 42 seconds
+      description: A problem with the request's parameters prevented it being fulfilled.
+      headers:
+        EvEnergy-Version:
+          $ref: '#/components/headers/version-2'
+        Retry-After:
+          $ref: '#/components/headers/retry-after'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/x-ratelimit-limit'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/x-ratelimit-remaining'
+  headers:
+    link:
+      description: 'Provides links to the previous and next pages of data, if they exist.'
+      example: '<https://api.ev.energy/v2/vehicles?page_size=25&page_before=vhcl01HNADFC4XEHQ4R83F3CF1V77D>; rel="previous", <https://api.ev.energy/v2/vehicles?page_size=25&page_after=vhcl01HNARS42AVJN9QWQF6J52B7MB>; rel="next"'
+      schema:
+        type: string
+    link-timestamps:
+      description: 'Provides links to the previous and next pages of data, if they exist.'
+      example: '<https://api.ev.energy/v2/vehicles?page_size=25&page_before=2024-04-18T08:53:52.225655Z>; rel="previous", <https://api.ev.energy/v2/vehicles?page_size=25&page_after=2024-04-18T08:53:52.225655Z>; rel="next"'
+      schema:
+        type: string
+    link-pages:
+      description: 'Provides links to the previous and next pages of data, if they exist.'
+      example: '<about:blank>; rel="previous", <https://api.ev.energy/v2/examples/?page=2&page_size=25>; rel="next"'
+      schema:
+        type: string
+    version-2:
+      description: 'Indicates the version of the API that generated this response. If EvEnergy-Version was not specified in the request, this will be your OAuth application''s default version.'
+      schema:
+        type: number
+        enum:
+          - 2
+    x-ratelimit-limit:
+      description: The maximum number of requests that can be made to this endpoint per hour. Defaults to 1000 but may vary per client.
+      schema:
+        type: number
+        default: 1000
+    x-ratelimit-remaining:
+      description: The number of requests remaining until this client's rate limit is reached.
+      schema:
+        type: number
+        default: 999
+    retry-after:
+      description: The number of seconds until this client's requests will not be rate limited.
+      schema:
+        type: number
+        default: 3600
+  examples:
+    ProblemInvalidPaginationParameter:
+      value:
+        type: 'https://api.ev.energy/v2/problems/pagination-parameters/'
+        status: 400
+        title: Invalid pagination parameter
+        detail: 'Invalid value for pagination parameter: page_size'
+    ProblemUnsupportedVersion:
+      value:
+        type: 'https://api.ev.energy/v2/problems/pagination-parameters/'
+        status: 400
+        title: Unsupported version
+        detail: 'Unsupported version requested: 3.0'
+x-internal: false
+security:
+  - oauth2: []
+tags:
+  - name: Charging Sessions
+    description: Endpoints related to records of charging.
+  - name: CSV
+    description: Endpoints that return CSV responses only and are not linkable to other endpoint data.
+  - name: EVSEs
+    description: Endpoints for interacting with EVSEs.
+  - name: Notifications
+    description: Endpoints for communicating notifications.
+  - name: Root
+    description: The root endpoint which lists all the top-level collections.
+  - name: Tariffs
+    description: Endpoints related to energy suppliers and their tariffs.
+  - name: Users
+    description: Endpoints for interacting with users.
+  - name: Vehicles
+    description: Endpoints for interacting with vehicles.
+  - name: Webhooks
+    description: Endpoints for configuring and managing webhooks.
