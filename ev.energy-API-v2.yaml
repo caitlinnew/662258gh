@@ -24,7 +24,7 @@ paths:
   /:
     get:
       summary: API root
-      description: Get links to resources accessible in the API.
+      description: Get links to resources accessible in the API and also in google.
       operationId: get-root
       responses:
         '200':
