@@ -15,4 +15,3 @@ jobs:
       - uses: stoplightio/spectral-action@latest
         with:
           file_glob: 'reference/*.yaml' # File pattern for your API design files
-          spectral_ruleset: {path-to-ruleset}
