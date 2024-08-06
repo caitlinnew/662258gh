@@ -252,7 +252,7 @@ paths:
         - $ref: '#/components/parameters/page_size'
         - $ref: '#/components/parameters/expand'
         - $ref: '#/components/parameters/version-2'
-      description: List all the EVSEs that the authorization token has access to.
+      description: List all the EVSEs that the authorization token has access to and maybe a few others.
       security:
         - oauth2:
             - 'evse:read'
