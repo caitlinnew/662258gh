@@ -10,7 +10,7 @@ info:
     name: Philip Douglas
   description: 'The official API for ev.energy, version 2.'
   license:
-    name: Proprietary
+    name: Proprietary stuff
     url: 'https://ev.energy'
   termsOfService: ''
 servers:
